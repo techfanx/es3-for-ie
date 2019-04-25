@@ -1,3 +1,8 @@
+require('es5-shim');
+require('es5-shim/es5-sham');
+require('console-polyfill');
+require('core-js/fn/object/assign');
+
 class ShaderProgram {
     constructor( holder, options = {} ) {
   
@@ -79,7 +84,7 @@ class ShaderProgram {
         perspective: true,
       }, options.camera )
   
-      const canvas = document.createElement( 'canvas' )
+      const canvas = document.getElementById( 'myCanvas' )
       const gl = canvas.getContext( 'webgl', { antialias: options.antialias } )
   
       if ( ! gl ) return false
