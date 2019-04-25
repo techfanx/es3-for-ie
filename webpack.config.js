@@ -1,68 +1,39 @@
 var webpack = require('webpack');
 var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var minimize = process.argv.indexOf('--minimize') !== -1;
 
 module.exports = {
-    entry: {
-        polyfill: [
-            'es5-shim',
-            'es5-shim/es5-sham'
-        ],
-        app: [
-            './src/index.js'
-        ]
-    },
+    entry: [
+        'es5-shim',
+        'es5-shim/es5-sham',
+        path.resolve('./src/index.js') // 项目入口
+    ],
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: '[name].js'
+        filename: 'app.js'
     },
     module: {
-        loaders: [
-            {
-                test: /\.js$/,
-                loader: 'babel',
-                query: {
-                    presets: ["es2015", "react"]
-                },
-                plugins: [
-                    "transform-es3-property-literals",
-                    "transform-es3-member-expression-literals",
-                    "transform-es2015-modules-simple-commonjs"
-                ]
+        loaders: [{
+            test: /\.js$/, 
+            loader: 'es3ify-loader'
+        },
+        {
+            test: /\.js$/,
+            loader: 'babel-loader'
+        }
+        ],
+    },
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false,
+                screw_ie8: false
             },
-            {
-                test: /\.css$/,
-                loader: 'style-loader!css-loader'
+            mangle: {
+                screw_ie8: false
             },
-            {
-                test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
-                loader: 'url-loader?limit=50000&name=[path][name].[ext]'
-            },
-            {
-                test: /\.(png|jpg)$/,
-                loader: 'url-loader?name=img/[hash:8].[ext]&limit=1024' //hash:8
-            },
-            {
-                test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url?name=font/[name].[ext]&limit=10000&minetype=application/font-woff'
-            },
-            {
-                test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url?name=font/[name].[ext]&limit=10&minetype=application/font-woff'
-            },
-            {
-                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url?name=font/[name].[ext]&limit=10&minetype=application/octet-stream'
-            },
-            {
-                test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'file?name=font/[name].[eot]'
-            },
-            {
-                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url?name=font/[name].[svg]&limit=10&minetype=image/svg+xml'
+            output: {
+                screw_ie8: false
             }
-        ]
-    }
+        })
+    ]
 };
